@@ -22,9 +22,10 @@ cp Sort_Organize ~/.local/bin/
 
 
 # USAGE #
-
+```bash
 cd to/your/Drone/Footage
 Sort_Organize                  # run normally
 Sort_Organize --dry            # preview without making changes
 Sort_Organize --min 30         # set minimum duration to 30 seconds
 Sort_Organize --dry --min 30   # combine both
+```
