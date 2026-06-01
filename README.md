@@ -5,21 +5,27 @@ Prerequisites
 Install system dependencies:
 
 # Arch/CachyOS
+```bash
 sudo pacman -S python mediainfo
-
+```
 # Ubuntu/Debian
+```bash
 sudo apt install python3 mediainfo
-
+```
+```bash
 pip install pymediainfo
 or
 sudo pacman -S python-pymediainfo
+```
 
 # Make it Executable:
+```bash
 chmod +x Sort_Organize
-
+```
 # copy to PATH
+```bash
 cp Sort_Organize ~/.local/bin/
-
+```
 
 # USAGE #
 ```bash
