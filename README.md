@@ -12,6 +12,7 @@ sudo pacman -S python mediainfo
 ```bash
 sudo apt install python3 mediainfo
 ```
+# Install dependencies
 ```bash
 pip install pymediainfo
 or
