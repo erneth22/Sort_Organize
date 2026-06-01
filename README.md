@@ -14,7 +14,6 @@ pip install pymediainfo
 or
 sudo pacman -S python-pymediainfo
 
-# CD into directory
 # Make it Executable:
 chmod +x Sort_Organize
 
