@@ -1,8 +1,7 @@
 # Sort_Organize
-Automation for  sorting and removal of DJI + GOPRO movies.
-Created for ease of managing drone footage between flying sessions.
-Script separates clips by date putting them in seperate directories
-By specifing minimum video length also ensures that random short videos are erased.
+Automation tool for sorting and cleanup of DJI and GoPro drone footage.
+Organizes clips into date-based directories and removes videos
+below a specified minimum duration.
 
 !!! Always use --dry when running first time !!!
 
