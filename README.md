@@ -5,8 +5,7 @@ below a specified minimum duration.
 
 !!! Always use --dry when running first time !!!
 
-Prerequisites
-Install system dependencies:
+## Prerequisites
 
 # Arch/CachyOS
 ```bash
