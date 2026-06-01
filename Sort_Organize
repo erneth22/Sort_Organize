@@ -1,0 +1,116 @@
+#!/usr/bin/env python3
+
+import os, argparse
+from pymediainfo import MediaInfo
+from pathlib import Path
+
+
+DIRECTORY = Path().cwd()
+VIDEO_EXTENSIONS = [".mp4", ".mkv", ".avi", ".mov", ".flv", ".wmv"]
+COLOR_RED = "\033[91m"
+COLOR_RESET = "\033[0m"
+
+parser = argparse.ArgumentParser(description="Organize video files into folders based on metadata or filename.")
+parser.add_argument("-d", "--dry", action="store_true", help="Dry run mode. No files will be renamed or removed.")
+parser.add_argument("-s", "--seconds", type=int, default=20, help="Minimum duration (in seconds) for video files to keep.")
+args = parser.parse_args()
+Min_duration_sec = args.seconds
+
+untouched_files = []
+removed_files = []
+
+def recognize_name(p):
+    file_name = p.name
+    if file_name.startswith("GH"):
+        print("Processing GOPRO file: ", file_name)
+        rename_file_metadata(file_name)
+    if file_name.startswith("DJI"):
+        print("Processing DJI file: ", file_name)
+        rename_file_name(file_name)
+    
+def handle_file_dur(p):
+    duration_ms = MediaInfo.parse(p).tracks[0].duration
+    duration_sec = duration_ms / 1000
+    if duration_sec < Min_duration_sec:
+        print(f"File {p.name} is too short: removing..")
+        removed_files.append(p.name)
+        return False
+    return True
+
+def iterate_over_single(single_file):
+    if handle_file_dur(single_file):
+        recognize_name(single_file)
+
+def rename_file_name(file_name):
+    #only for DJI files
+    stripped_name_date = file_name[4:12]
+    stripped_name_flight = file_name[19:23]
+    date_DD_MM_YY = stripped_name_date[6:8] + "_" + stripped_name_date[4:6] + "_" + stripped_name_date[0:4]
+    
+    folder = DIRECTORY / date_DD_MM_YY
+    if not folder.exists():
+        print("Creating folder: ", folder)
+        if not args.dry:
+            folder.mkdir()
+
+    new_file_name = folder / (stripped_name_flight + Path(file_name).suffix)
+    if new_file_name.exists():
+        print(f"File {new_file_name} already exists. Skipping..")
+        return
+    print("Renaming file to: ", new_file_name)
+    if not args.dry:
+        os.rename(DIRECTORY / file_name, new_file_name)
+
+def rename_file_metadata(file_name):
+    #only for GOPRO files
+    info = MediaInfo.parse(DIRECTORY / file_name)
+    stripped_name_date = info.tracks[0].encoded_date[0:10]
+    stripped_name_date = stripped_name_date.replace("-", "")
+    date_DD_MM_YY = stripped_name_date[6:8] + "_" + stripped_name_date[4:6] + "_" + stripped_name_date[0:4]
+    folder = DIRECTORY / date_DD_MM_YY
+    if not folder.exists():
+        print("Creating folder: ", folder)
+        if not args.dry:
+            folder.mkdir()
+
+    new_file_name = folder / (file_name)
+    print("Renaming file to: ", new_file_name)
+    if not args.dry:
+        os.rename(DIRECTORY / file_name, new_file_name)
+
+
+def sort_organize():
+    print("Working in directory: ", DIRECTORY)
+    for file in list(DIRECTORY.iterdir()):
+        if file.suffix.lower() in VIDEO_EXTENSIONS:
+            iterate_over_single(file)
+        else:
+            untouched_files.append(file.name)
+
+    print("Untouched files or directories: ", untouched_files)        
+
+
+def cleanup():
+    if not removed_files:
+        return
+    print(f"\n{COLOR_RED} *REMOVING THESE FILES* {COLOR_RESET}", removed_files)
+    print("Are your sure? (y/N)")
+    answer = input().strip()
+    if answer.lower() != "y":
+        print("Aborting..")
+        return
+    for file in removed_files:
+        try:
+            if not args.dry:
+                os.remove(DIRECTORY / file)
+        except Exception as e:
+            print(f"Error removing file {file}: {e}")
+    print("Files removed successfully.")
+    
+if __name__ == "__main__":
+    print("This script will organize your video files into folders based on their metadata or filename.")
+    print(f"It will also remove files that are shorter than {Min_duration_sec} seconds.")
+    sort_organize()
+    cleanup()
+    print("*** DONE ***")
+
