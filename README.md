@@ -9,17 +9,17 @@ below a specified minimum duration.
 
 # Arch/CachyOS
 ```bash
-sudo pacman -S python mediainfo
+sudo pacman -S python mediainfo ffmpeg
 ```
 # Ubuntu/Debian
 ```bash
-sudo apt install python3 mediainfo
+sudo apt install python3 mediainfo ffmpeg
 ```
 # Install dependencies
 ```bash
-pip install pymediainfo
+pip install pymediainfo ffmpeg-python
 or
-sudo pacman -S python-pymediainfo
+sudo pacman -S python-pymediainfo python-ffmpeg-python
 ```
 
 # Make it Executable:
