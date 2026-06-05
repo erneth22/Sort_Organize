@@ -3,7 +3,6 @@
 import os, argparse, ffmpeg, time
 from pymediainfo import MediaInfo
 from pathlib import Path
-from concurrent.futures import ThreadPoolExecutor
 
 
 DIRECTORY = Path().cwd()
